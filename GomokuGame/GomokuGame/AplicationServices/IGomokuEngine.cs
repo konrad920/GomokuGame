@@ -14,5 +14,7 @@ namespace GomokuGame.AplicationServices
         bool CheckFinishAMatch();
 
         Player WhoWinsAMatch();
+
+        bool CheckFieldIsFull();
     }
 }

@@ -9,6 +9,7 @@ namespace GomokuGame.UI
         private readonly IGomokuEngine gomokuEngine;
 
         private bool finishedMatch = false;
+        private bool fieldIsFull = false;
 
         public App(IGomokuEngine gomokuEngine)
         {
@@ -23,8 +24,12 @@ namespace GomokuGame.UI
             Console.WriteLine($"Imie pierwszego gracza to: {firstPlayer.Name}, jego id to: {firstPlayer.Id}, a jego znacznik to: {firstPlayer.FieldType}");
             Console.WriteLine($"Imie drugiego gracza to: {secondPlayer.Name}, jego id to: {secondPlayer.Id}, a jego znacznik to: {secondPlayer.FieldType}");
 
+            var numberOfRound = 0;
+
             do
             {
+                numberOfRound++;
+                Console.WriteLine($"Tura numer {numberOfRound}");
                 if (firstPlayer.IsPlaying == true)
                 {
                     Console.WriteLine($"Teraz ruch gracza ID: {firstPlayer.Id}");
@@ -41,10 +46,18 @@ namespace GomokuGame.UI
                 }
 
                 this.finishedMatch = gomokuEngine.CheckFinishAMatch();
-            } while (finishedMatch != true);
-
+                this.fieldIsFull = gomokuEngine.CheckFieldIsFull();
+            } while (finishedMatch != true && fieldIsFull != true);
+            
             var winner = gomokuEngine.WhoWinsAMatch();
-            Console.WriteLine($"Zwyciężył {winner.Name}");
+            if ( winner != null )
+            {
+                Console.WriteLine($"Zwyciężył {winner.Name}");
+            }
+            else
+            {
+                Console.WriteLine("Remis");
+            }
         }
     }
 }

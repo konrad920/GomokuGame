@@ -70,11 +70,80 @@ namespace GomokuGame.AplicationServices
         }
         public void SetMarkerOnField(BasicSettings.FieldType fieldType)
         {
-            Console.Write("Podaj współrzędną X dla swojego znacznika: ");
-            var xPosition = int.Parse(Console.ReadLine());
-            Console.Write("Podaj współrzędną Y dla swojego znacznika: ");
-            var yPosition = int.Parse(Console.ReadLine());
-            this.Field[xPosition, yPosition] = fieldType;
+            while(true)
+            {
+                Console.Write("Podaj współrzędną X dla swojego znacznika: ");
+                var xPositionFromUser = Console.ReadLine();
+                if (int.TryParse(xPositionFromUser, out var xPosition) == false)
+                {
+                    Console.WriteLine("To nie liczba, spróbuj ponownie");
+                    continue;
+                }
+                else if (xPosition <= 0 || xPosition > rangeOfField)
+                {
+                    Console.WriteLine("Współrzędna spoza zakresu");
+                    continue;
+                }
+                Console.Write("Podaj współrzędną Y dla swojego znacznika: ");
+                var yPositionFromUser = Console.ReadLine();
+                if (int.TryParse(yPositionFromUser, out var yPosition) == false)
+                {
+                    Console.WriteLine("To nie liczba, spróbuj ponownie");
+                    continue;
+                }
+                else if (yPosition <= 0 || yPosition > rangeOfField)
+                {
+                    Console.WriteLine("Współrzędna spoza zakresu");
+                    continue;
+                }
+
+                var xPositionOnTheField = xPosition - 1;
+                var yPositionOnTheField = yPosition - 1;
+
+                var isEmpty = CheckFieldIsEmpty(xPositionOnTheField, yPositionOnTheField);
+                if (isEmpty == true)
+                {
+                    this.Field[xPositionOnTheField, yPositionOnTheField] = fieldType;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("To pole jest zajete");
+                    continue;
+                }
+            }
+        }
+
+        private bool CheckFieldIsEmpty(int x, int y)
+        {
+            if (this.Field[x, y] == BasicSettings.FieldType.fTCircle || this.Field[x, y] == BasicSettings.FieldType.fTCross)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool CheckFieldIsFull()
+        {
+            var numberOfUsedFields = 0;
+            foreach (var field in this.Field)
+            {
+                if (field == BasicSettings.FieldType.fTCross || field == BasicSettings.FieldType.fTCircle)
+                {
+                    numberOfUsedFields++;
+                }
+            }
+            if (this.Field.Length == numberOfUsedFields)
+            {
+                return true;
+            }
+            else 
+            { 
+                return false; 
+            }
         }
 
         public bool CheckFinishAMatch()
