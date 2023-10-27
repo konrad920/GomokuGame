@@ -10,5 +10,9 @@ namespace GomokuGame.AplicationServices
         void SetFieldType(Player player);
 
         void SetMarkerOnField(BasicSettings.FieldType fieldType);
+
+        bool CheckFinishAMatch();
+
+        Player WhoWinsAMatch();
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace GomokuGame.Models
+﻿using GomokuGame.DataAccess.Models;
+
+namespace GomokuGame.Models
 {
-    public abstract class PlayerBase
+    public class PlayerBase : IPlayer
     {
         public int Id { get; set; }
     }

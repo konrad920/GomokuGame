@@ -9,19 +9,22 @@ namespace GomokuGame.AplicationServices
         private bool cross = false;
         private bool circle = false;
         private List<Player> playerList = new List<Player>();
-        private readonly BasicSettings basicSettings;
-
-        public GomokuEngine(BasicSettings basicSettings)
+        private static int rangeOfField = 3;
+        private static int crossWin = rangeOfField * (int)BasicSettings.FieldType.fTCross;
+        private static int circleWin = rangeOfField * (int)BasicSettings.FieldType.fTCircle;
+        private BasicSettings.FieldType[,] Field = new BasicSettings.FieldType[rangeOfField, rangeOfField];
+        private int finalSum = 0;
+        public GomokuEngine()
         {
-            this.basicSettings = basicSettings;
         }
 
         public Player GetNewPlayer()
         {
             Console.Write("Podaj imie gracza: ");
             var nameOfPlayer = Console.ReadLine();
-            var player = new Player(){ Name = nameOfPlayer, Score = 0};
+            var player = new Player(){ Name = nameOfPlayer, Score = 0, IsPlaying = true};
             SetFieldType(player);
+            player.Id = playerList.Count + 1;
             playerList.Add(player);
             return player;
         }
@@ -71,7 +74,61 @@ namespace GomokuGame.AplicationServices
             var xPosition = int.Parse(Console.ReadLine());
             Console.Write("Podaj współrzędną Y dla swojego znacznika: ");
             var yPosition = int.Parse(Console.ReadLine());
-            basicSettings.Field[xPosition, yPosition] = fieldType;
+            this.Field[xPosition, yPosition] = fieldType;
+        }
+
+        public bool CheckFinishAMatch()
+        {
+            int sumOfScoreFromFirstColumn = 0;
+            int sumOfScoreFromSecondColumn = 0;
+            int sumOfScoreFromThrithColumn = 0;
+            int sumOfScoreFromFirstRow = 0;
+            int sumOfScoreFromSecondRow = 0;
+            int sumOfScoreFromThrithRow = 0;
+            int sumOfScoreFromFirstCross = 0;
+            int sumOfScoreFromSecondCross = 0;
+            for (int i = 0;  i < rangeOfField; i++)
+            {
+                sumOfScoreFromFirstColumn += (int)Field[i, 0];
+                sumOfScoreFromSecondColumn += (int)Field[i, 1];
+                sumOfScoreFromThrithColumn += (int)Field[i, 2];
+                sumOfScoreFromFirstRow += (int)Field[0, i];
+                sumOfScoreFromSecondRow += (int)Field[1, i];
+                sumOfScoreFromThrithRow += (int)Field[2, i];
+                sumOfScoreFromFirstCross += (int)Field[i, i];
+                sumOfScoreFromSecondCross += (int)Field[(rangeOfField-1)-i, i];
+            }
+
+            if (sumOfScoreFromFirstColumn == crossWin || sumOfScoreFromSecondColumn == crossWin || sumOfScoreFromThrithColumn == crossWin || sumOfScoreFromFirstRow == crossWin || sumOfScoreFromSecondRow == crossWin || sumOfScoreFromThrithRow == crossWin || sumOfScoreFromFirstCross == crossWin || sumOfScoreFromSecondCross == crossWin)
+            {
+                this.finalSum = crossWin;
+                return true;
+            }
+            else if (sumOfScoreFromFirstColumn == circleWin || sumOfScoreFromSecondColumn == circleWin || sumOfScoreFromThrithColumn == circleWin || sumOfScoreFromFirstRow == circleWin || sumOfScoreFromSecondRow == circleWin || sumOfScoreFromThrithRow == circleWin || sumOfScoreFromFirstCross == circleWin || sumOfScoreFromSecondCross == circleWin)
+            {
+                this.finalSum = circleWin;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public Player WhoWinsAMatch()
+        {
+            if (this.finalSum == crossWin)
+            {
+                return playerList.FirstOrDefault(x => x.FieldType == BasicSettings.FieldType.fTCross);
+            }
+            else if(this.finalSum == circleWin)
+            {
+                return playerList.FirstOrDefault(x => x.FieldType == BasicSettings.FieldType.fTCircle);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
