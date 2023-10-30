@@ -1,4 +1,5 @@
-﻿using GomokuGame.DataAccess;
+﻿using GomokuGame.AplicationServices;
+using GomokuGame.DataAccess;
 
 namespace GomokuGame.Models
 {
@@ -8,7 +9,7 @@ namespace GomokuGame.Models
 
         public int Score { get; set; }
 
-        public BasicSettings.FieldType FieldType { get; set; }
+        public GameOptions.FieldType FieldType { get; set; }
 
         public bool IsPlaying { get; set; }
     }

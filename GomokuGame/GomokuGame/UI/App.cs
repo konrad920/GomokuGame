@@ -17,6 +17,7 @@ namespace GomokuGame.UI
         }
         public void Run()
         {
+            gomokuEngine.StartNewGame();
             Console.WriteLine("Hello");
             var firstPlayer = gomokuEngine.GetNewPlayer();
             var secondPlayer = gomokuEngine.GetNewPlayer();

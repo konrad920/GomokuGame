@@ -10,14 +10,18 @@ namespace GomokuGame.AplicationServices
         private bool circle = false;
         private List<Player> playerList = new List<Player>();
         private static int rangeOfField = 3;
-        private static int crossWin = rangeOfField * (int)BasicSettings.FieldType.fTCross;
-        private static int circleWin = rangeOfField * (int)BasicSettings.FieldType.fTCircle;
-        private BasicSettings.FieldType[,] Field = new BasicSettings.FieldType[rangeOfField, rangeOfField];
+        private static int crossWin = rangeOfField * (int)GameOptions.FieldType.X;
+        private static int circleWin = rangeOfField * (int)GameOptions.FieldType.O;
         private int finalSum = 0;
-        public GomokuEngine()
-        {
-        }
+        private GameOptions.FieldType[,] Field = new GameOptions.FieldType[rangeOfField, rangeOfField];
 
+
+        public void StartNewGame()
+        {
+            var newGame = new GameOptions();
+            newGame.InitialGame();
+            newGame.Field = this.Field;
+        }
         public Player GetNewPlayer()
         {
             Console.Write("Podaj imie gracza: ");
@@ -39,7 +43,7 @@ namespace GomokuGame.AplicationServices
                 {
                     if (cross == false)
                     {
-                        player.FieldType = BasicSettings.FieldType.fTCross;
+                        player.FieldType = GameOptions.FieldType.X;
                         cross = true;
                         break;
                     }
@@ -52,7 +56,7 @@ namespace GomokuGame.AplicationServices
                 {
                     if (circle == false)
                     {
-                        player.FieldType = BasicSettings.FieldType.fTCircle;
+                        player.FieldType = GameOptions.FieldType.O;
                         circle = true;
                         break;
                     }
@@ -68,7 +72,7 @@ namespace GomokuGame.AplicationServices
                 }
             }
         }
-        public void SetMarkerOnField(BasicSettings.FieldType fieldType)
+        public void SetMarkerOnField(GameOptions.FieldType fieldType)
         {
             while(true)
             {
@@ -104,6 +108,7 @@ namespace GomokuGame.AplicationServices
                 if (isEmpty == true)
                 {
                     this.Field[xPositionOnTheField, yPositionOnTheField] = fieldType;
+                    PresentScore();
                     break;
                 }
                 else
@@ -114,9 +119,30 @@ namespace GomokuGame.AplicationServices
             }
         }
 
+        private void PresentScore()
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                Console.Write($"|{this.Field[i, 0]}|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("---------");
+            for (var i = 0; i < 3; i++)
+            {
+                Console.Write($"|{this.Field[i, 1]}|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("---------");
+            for (var i = 0; i < 3; i++)
+            {
+                Console.Write($"|{this.Field[i, 2]}|");
+            }
+            Console.WriteLine();
+        }
+
         private bool CheckFieldIsEmpty(int x, int y)
         {
-            if (this.Field[x, y] == BasicSettings.FieldType.fTCircle || this.Field[x, y] == BasicSettings.FieldType.fTCross)
+            if (this.Field[x, y] == GameOptions.FieldType.O || this.Field[x, y] == GameOptions.FieldType.X)
             {
                 return false;
             }
@@ -131,7 +157,7 @@ namespace GomokuGame.AplicationServices
             var numberOfUsedFields = 0;
             foreach (var field in this.Field)
             {
-                if (field == BasicSettings.FieldType.fTCross || field == BasicSettings.FieldType.fTCircle)
+                if (field == GameOptions.FieldType.X || field == GameOptions.FieldType.O)
                 {
                     numberOfUsedFields++;
                 }
@@ -188,11 +214,11 @@ namespace GomokuGame.AplicationServices
         {
             if (this.finalSum == crossWin)
             {
-                return playerList.FirstOrDefault(x => x.FieldType == BasicSettings.FieldType.fTCross);
+                return playerList.FirstOrDefault(x => x.FieldType == GameOptions.FieldType.X);
             }
             else if(this.finalSum == circleWin)
             {
-                return playerList.FirstOrDefault(x => x.FieldType == BasicSettings.FieldType.fTCircle);
+                return playerList.FirstOrDefault(x => x.FieldType == GameOptions.FieldType.O);
             }
             else
             {
